@@ -58,9 +58,11 @@ def main():
             transcript = transcribeYoutubeVideo(url, model)
             error_handling_transcription(transcript)
         elif localVideo:
-             transcript = transcribeLocalVideo({"path": localVideo.name, "name": localVideo.name}, model)
+             transcript = transcribeLocalVideo(localVideo, model)
              error_handling_transcription(transcript)
 
+    word_filename = save_transcription_to_word(transcript)
+    pdf_filename = convert_word_to_pdf(word_filename)
 
     st.markdown('<div style="margin-top: 450px;"</div>',
                 unsafe_allow_html=True)

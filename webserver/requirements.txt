@@ -1,3 +1,5 @@
 pytube
 openai-whisper
 streamlit
+docx
+comtypes

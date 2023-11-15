@@ -1,16 +1,34 @@
-import tempfile
+import tempfile, os
 from pprint import pprint
 
 import whisper
 from pytube import YouTube
 
+from docx import Document
+from comtypes.client import CreateObject
+
+def save_transcription_to_word(transcript, filename="transcript.docx"):
+    doc = Document()
+    doc.add_paragraph(transcript)
+    doc.save(filename)
+    return filename
+
+def convert_word_to_pdf(word_filename, pdf_filename="transcript.pdf"):
+    # This function is platform-dependent
+    word = CreateObject('Word.Application')
+    doc = word.Documents.Open(word_filename)
+    doc.SaveAs(pdf_filename, FileFormat=17)  # 17 represents wdFormatPDF
+    doc.Close()
+    word.Quit()
+    return pdf_filename
 
 def transcribeYoutubeVideo(youtube_url: str,  model_name: str):
     video = downloadYoutubeVideo(youtube_url)
     transcription = transcribe(video, model_name)
     return transcription
 
-def transcribeLocalVideo(video: dict, model_name="medium"):
+def transcribeLocalVideo(local_video: any, model_name="medium"):
+    video = downloadLocalVideo(local_video)
     transcription = transcribe(video, model_name)
     return transcription
 
@@ -34,6 +52,16 @@ def downloadYoutubeVideo(youtube_url: str) -> dict:
     print("Download complete:" + file_path)
     return {"name": yt._title, "thumbnail": yt.thumbnail_url, "path": file_path}
 
+def downloadLocalVideo(local_video: any) -> dict:
+    directory = tempfile.gettempdir()
+    file_path = os.path.join(directory, local_video.name)
+    with open(file_path, "wb") as f:
+        f.write(local_video.getbuffer())
+    video_name = local_video.name
+    thumbnail_url = ""  # Local videos typically don't have a thumbnail URL
+
+    print("Download complete: " + file_path)
+    return {"name": video_name, "thumbnail": thumbnail_url, "path": file_path}
 
 def on_progress(stream, chunk, bytes_remaining):
     """Callback function"""
