@@ -38,9 +38,12 @@ def main():
     st.markdown(buy_me_coffee_script, unsafe_allow_html=True)
 
     # User input: YouTube URL
-    url = st.text_input("Enter YouTube URL:")
+    ytOrLocal = st.radio("How you :", ("YouTube Video", "Local Video"))
 
-    localVideo = st.text_input("Choose Video:")
+    if ytOrLocal == "YouTube Video":
+        url = st.text_input("Enter YouTube URL:")
+    elif ytOrLocal == "Local Video":
+        localVideo = st.text_input("Choose Video:")
 
     # User input: model
     models = ["tiny", "base", "small", "medium", "large"]
