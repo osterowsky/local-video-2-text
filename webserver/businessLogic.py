@@ -5,8 +5,12 @@ import whisper
 from pytube import YouTube
 
 
-def transcribeVideoOrchestrator(youtube_url: str,  model_name: str):
+def transcribeYoutubeVideo(youtube_url: str,  model_name: str):
     video = downloadYoutubeVideo(youtube_url)
+    transcription = transcribe(video, model_name)
+    return transcription
+
+def transcribeLocalVideo(video: dict, model_name="medium"):
     transcription = transcribe(video, model_name)
     return transcription
 
@@ -16,7 +20,7 @@ def transcribe(video: dict, model_name="medium"):
     print("Using model:", model_name)
     model = whisper.load_model(model_name)
     result = model.transcribe(video['path'], )
-    pprint(result)
+    print(result)
     return result["text"]
 
 
