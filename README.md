@@ -1,33 +1,43 @@
-![banner img](https://i.ibb.co/4tzG9LY/Video2-Text-Banner.png)
-
-
 # Video2Text
 
 Video2Text (https://video2text.de) allows you to easily convert a youtube video to text. This process is also called transcription.
 It is completely free to use and runs locally on your pc.
 
+## Table of Contents
 
-## Video Tutorial
+- [Overview](#overview)
+- [Getting Started](#getting-started)
+- [Installation](#installation)
+- [Help](#help)
+- [Credits](#credits)
+- [Acknowledgments](#acknowledgments)
+- [License](#license)
 
-[![](https://markdown-videos-api.jorgenkh.no/youtube/b9oyBebJCK0)](https://youtu.be/b9oyBebJCK0)
-
-
-## Written Tutorial
-
-[PLEASE MAKE SURE YOU HAVE FFMPEG INSTALLED!](https://www.wikihow.com/Install-FFmpeg-on-Windows)
+# Getting Started
+--------------------------------------
 
 ```$ apt-get install ffmpeg```
 or
 ```$ brew install ffmpeg```
 
---------------------------------------
+## Installation
 
-0. clone the repo with `git clone https://github.com/XamHans/video-2-text.git`
-1. cd into webserver
-2. pip3 install -r requirements.txt
-3. streamlit run app.py
-4. open http://localhost:8501 in your browser
-
+1. Clone the repo with
+  ```bash
+  git clone https://github.com/XamHans/video-2-text.git`
+  ```
+2. Run
+  ```bash
+  cd into webserver
+  ```
+3. Run
+  ```bash
+  pip3 install -r requirements.txt
+  ```
+4. To run app
+  ```bash
+  streamlit run app.py
+  ```
 ## Help
 
 If you should have any troubles try to re-install pytube.
@@ -40,22 +50,10 @@ if you should run into an error where streamlit is not recognized by your termin
 
 If you still have problems, create a new issue.
 
-
-## Support
-If you want to support me, you can buy me a coffee: https://www.buymeacoffee.com/hayerhans
-Your support means a lot to me, thanks!
-
-## Author
+## Credits
 
 Johannes Hayer
 https://jhayer.tech
-
-## Version History
-
-- 0.2
-  used streamlit for frontend
-- 0.1
-  - Initial Release
 
 ## License
 
