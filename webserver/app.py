@@ -15,6 +15,7 @@ def error_handling_transcription(transcript):
         st.write("Please try again.")
 
 def main():
+    url, localVideo = None, None
     st.title("Video2Text")
  # Embed the Buy Me a Coffee widget using the provided <script> tag
     buy_me_coffee_script = """
@@ -38,12 +39,14 @@ def main():
     st.markdown(buy_me_coffee_script, unsafe_allow_html=True)
 
     # User input: YouTube URL
-    ytOrLocal = st.radio("How you :", ("YouTube Video", "Local Video"))
+    ytOrLocal = st.radio("What you would like to transcribe?:", ("YouTube Video", "Local Video"))
 
     if ytOrLocal == "YouTube Video":
         url = st.text_input("Enter YouTube URL:")
     elif ytOrLocal == "Local Video":
-        localVideo = st.text_input("Choose Video:")
+        localVideo = st.file_uploader("Upload Local Video:")
+        if localVideo:
+            print(localVideo.name)
 
     # User input: model
     models = ["tiny", "base", "small", "medium", "large"]
@@ -55,7 +58,7 @@ def main():
             transcript = transcribeYoutubeVideo(url, model)
             error_handling_transcription(transcript)
         elif localVideo:
-             transcript = transcribeLocalVideo(localVideo, model)
+             transcript = transcribeLocalVideo({"path": localVideo.name, "name": localVideo.name}, model)
              error_handling_transcription(transcript)
 
 
