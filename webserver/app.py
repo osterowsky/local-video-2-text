@@ -1,5 +1,5 @@
 import streamlit as st
-from businessLogic import transcribeYoutubeVideo, transcribeLocalVideo
+from businessLogic import transcribeYoutubeVideo, transcribeLocalVideo, save_transcription, cleanup_old_files
 
 
 def open_buy_me_coffee():
@@ -16,28 +16,8 @@ def error_handling_transcription(transcript):
 
 def main():
     url, localVideo = None, None
-    st.title("Video2Text")
- # Embed the Buy Me a Coffee widget using the provided <script> tag
-    buy_me_coffee_script = """
-         <script
-            data-name="BMC-Widget"
-            data-cfasync="false"
-            src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js"
-            data-id="hayerhans"
-            data-description="If you like this, please consider supporting this work"
-            data-message="If you like this, please consider supporting me!"
-            data-color="#BD5FFF"
-            data-position="Right"
-            data-x_margin="18"
-            data-y_margin="18">
-        </script>
-    """
-    st.components.v1.html(buy_me_coffee_script)
-    st.title("Support Me on Buy Me a Coffee")
-    st.write(
-        "If you find this app helpful and would like to support me, you can buy me a coffee!")
-    st.markdown(buy_me_coffee_script, unsafe_allow_html=True)
 
+    st.title("Video2Text")
     # User input: YouTube URL
     ytOrLocal = st.radio("What you would like to transcribe?:", ("YouTube Video", "Local Video"))
 
@@ -53,7 +33,13 @@ def main():
     model = st.selectbox("Select Model:", models)
     st.write(
         "If you take a smaller model it is faster but not as accurate, whereas a larger model is slower but more accurate.")
+
+    if 'transcript' not in st.session_state:
+        st.session_state.transcript = ""
+        st.session_state.word_file = None
+
     if st.button("Transcribe"):
+        cleanup_old_files()
         if url:
             transcript = transcribeYoutubeVideo(url, model)
             error_handling_transcription(transcript)
@@ -61,8 +47,17 @@ def main():
              transcript = transcribeLocalVideo(localVideo, model)
              error_handling_transcription(transcript)
 
-    word_filename = save_transcription_to_word(transcript)
-    pdf_filename = convert_word_to_pdf(word_filename)
+        st.session_state.transcript = transcript
+        st.session_state.word_file = save_transcription(transcript)
+
+    # Initialize session state for transcript
+    if st.session_state.transcript and st.session_state.word_file:
+        with open(st.session_state.word_file, "rb") as file:
+            st.download_button(label="Download Word Document",
+                               data=file,
+                               file_name=st.session_state.word_file,
+                               mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+
 
     st.markdown('<div style="margin-top: 450px;"</div>',
                 unsafe_allow_html=True)

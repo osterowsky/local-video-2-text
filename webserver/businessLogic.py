@@ -1,26 +1,20 @@
 import tempfile, os
 from pprint import pprint
 
+import streamlit as st
 import whisper
 from pytube import YouTube
 
 from docx import Document
-from comtypes.client import CreateObject
 
-def save_transcription_to_word(transcript, filename="transcript.docx"):
-    doc = Document()
-    doc.add_paragraph(transcript)
-    doc.save(filename)
-    return filename
+def save_transcription(transcript):
+    with tempfile.NamedTemporaryFile(delete=False, suffix='.docx') as temp_word:
+        doc = Document()
+        doc.add_paragraph(transcript)
+        doc.save(temp_word.name)
+        word_file = temp_word.name
 
-def convert_word_to_pdf(word_filename, pdf_filename="transcript.pdf"):
-    # This function is platform-dependent
-    word = CreateObject('Word.Application')
-    doc = word.Documents.Open(word_filename)
-    doc.SaveAs(pdf_filename, FileFormat=17)  # 17 represents wdFormatPDF
-    doc.Close()
-    word.Quit()
-    return pdf_filename
+    return word_file
 
 def transcribeYoutubeVideo(youtube_url: str,  model_name: str):
     video = downloadYoutubeVideo(youtube_url)
@@ -69,3 +63,12 @@ def on_progress(stream, chunk, bytes_remaining):
     bytes_downloaded = total_size - bytes_remaining
     pct_completed = bytes_downloaded / total_size * 100
     print(f"Status: {round(pct_completed, 2)} %")
+
+def cleanup_old_files():
+    if 'word_file' in st.session_state and st.session_state.word_file and os.path.exists(st.session_state.word_file):
+        os.remove(st.session_state.word_file)
+        st.session_state.word_file = None
+
+    if 'pdf_file' in st.session_state and st.session_state.pdf_file and os.path.exists(st.session_state.pdf_file):
+        os.remove(st.session_state.pdf_file)
+        st.session_state.pdf_file = None
